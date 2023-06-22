@@ -18,16 +18,22 @@ cursor = connection.cursor()
 cursor.execute(sql.SQL('DROP DATABASE IF EXISTS {}').format(sql.Identifier(db_name)))
 cursor.execute(sql.SQL('DROP SCHEMA IF EXISTS ntg CASCADE'))
 
+
 cursor.execute(sql.SQL('CREATE DATABASE {}').format(sql.Identifier(db_name)))
 
-structure_dump = open('../../data/cbgm_structure.dump', 'r')
+structure_dump = open('../../data/cbgm_structure.sql', 'r')
 cursor.execute(structure_dump.read())
 
-books_dump = open('../../data/books.dump', 'r')
+books_dump = open('../../data/books.sql', 'r')
 cursor.execute(books_dump.read())
 
-ranges_dump = open('../../data/ranges.dump', 'r')
-cursor.execute(ranges_dump.read())
+cursor.execute(sql.SQL('SELECT * FROM ntg.books'))
+print(cursor.fetchall())
+
+# ranges_dump = open('../../data/ranges.dump', 'r')
+# cursor.execute(ranges_dump.read())
+
+
 
 cursor.close()
 connection.close()
