@@ -24,7 +24,7 @@ SET default_table_access_method = heap;
 -- Name: ranges; Type: TABLE; Schema: ntg; Owner: ntg
 --
 
-CREATE TABLE ntg.ranges (
+CREATE TABLE IF NOT EXISTS ntg.ranges (
     rg_id integer NOT NULL,
     bk_id integer NOT NULL,
     range character varying NOT NULL,
@@ -38,7 +38,7 @@ ALTER TABLE ntg.ranges OWNER TO ntg;
 -- Name: ranges_rg_id_seq; Type: SEQUENCE; Schema: ntg; Owner: ntg
 --
 
-CREATE SEQUENCE ntg.ranges_rg_id_seq
+CREATE SEQUENCE IF NOT EXISTS ntg.ranges_rg_id_seq
     AS integer
     START WITH 1
     INCREMENT BY 1
@@ -356,7 +356,7 @@ INSERT INTO ntg.ranges (rg_id, bk_id, range, passage)
             (287, 27, '22', '[272200000,272300000)'),
             (288, 210, 'All', '[2100000000,2110000000)'),
             (289, 210, '1', '[2100100000,2100200000)'),
-            (290, 210, '2', '[2100200000,2100300000)')
+            (290, 210, '2', '[2100200000,2100300000)');
 
 
 
@@ -371,23 +371,23 @@ SELECT pg_catalog.setval('ntg.ranges_rg_id_seq', 290, true);
 -- Name: ranges ranges_pkey; Type: CONSTRAINT; Schema: ntg; Owner: ntg
 --
 
-ALTER TABLE ONLY ntg.ranges
-    ADD CONSTRAINT ranges_pkey PRIMARY KEY (rg_id);
+-- ALTER TABLE ONLY ntg.ranges
+--     ADD CONSTRAINT ranges_pkey PRIMARY KEY (rg_id);
 
 
 --
 -- Name: ix_ranges_passage_gist; Type: INDEX; Schema: ntg; Owner: ntg
 --
 
-CREATE INDEX ix_ranges_passage_gist ON ntg.ranges USING gist (passage);
+-- CREATE INDEX ix_ranges_passage_gist ON ntg.ranges USING gist (passage);
 
 
 --
 -- Name: ranges ranges_bk_id_fkey; Type: FK CONSTRAINT; Schema: ntg; Owner: ntg
 --
 
-ALTER TABLE ONLY ntg.ranges
-    ADD CONSTRAINT ranges_bk_id_fkey FOREIGN KEY (bk_id) REFERENCES ntg.books(bk_id) ON DELETE CASCADE;
+-- ALTER TABLE ONLY ntg.ranges
+--     ADD CONSTRAINT ranges_bk_id_fkey FOREIGN KEY (bk_id) REFERENCES ntg.books(bk_id) ON DELETE CASCADE;
 
 
 --
