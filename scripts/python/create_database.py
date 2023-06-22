@@ -6,33 +6,39 @@ connection = connect(user="ntg",
                      port="5432",
                      database="access_db")
 
-print('\ntype(connection):', type(connection))
 
 db_name = 'gal_ph1'
 autocommit = extensions.ISOLATION_LEVEL_AUTOCOMMIT
-print('ISOLATION_LEVEL_AUTOCOMMIT:', extensions.ISOLATION_LEVEL_AUTOCOMMIT)
 
 connection.set_isolation_level(autocommit)
 
 cursor = connection.cursor()
+print('Dropping existing dataabase if necessary')
 cursor.execute(sql.SQL('DROP DATABASE IF EXISTS {}').format(sql.Identifier(db_name)))
 cursor.execute(sql.SQL('DROP SCHEMA IF EXISTS ntg CASCADE'))
+print('Done')
 
-
+print('Creating new database and loading structure')
 cursor.execute(sql.SQL('CREATE DATABASE {}').format(sql.Identifier(db_name)))
 
 structure_dump = open('../../data/cbgm_structure.sql', 'r')
 cursor.execute(structure_dump.read())
+print('Done')
 
+print('Loading book data')
 books_dump = open('../../data/books.sql', 'r')
 cursor.execute(books_dump.read())
 
 cursor.execute(sql.SQL('SELECT * FROM ntg.books'))
-print(cursor.fetchall())
+assert(len(cursor.fetchall()), 28)
+print('Done')
 
-# ranges_dump = open('../../data/ranges.dump', 'r')
-# cursor.execute(ranges_dump.read())
-
+print('Loading ranges')
+ranges_dump = open('../../data/ranges.sql', 'r')
+cursor.execute(ranges_dump.read())
+cursor.execute(sql.SQL('SELECT * FROM ntg.ranges'))
+assert(len(cursor.fetchall()), 290)
+print('Done')
 
 
 cursor.close()
