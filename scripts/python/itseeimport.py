@@ -17,10 +17,13 @@ class ItseeApparatusLoader(object):
                                     database=db_name)
         self.cursor = self.connection.cursor()
 
-    def load_apparatus(self, db_name, book_number, data_dir, BYZ_WITS):
+    def load_apparatus(self, db_name, book_number, data_dir, byz_wits, min_byz):
 
         print('byz wits')
-        print(BYZ_WITS)
+        print(byz_wits)
+
+        print('min byz')
+        print(min_byz)
 
         self.cursor.execute("""ALTER TABLE locstem DISABLE TRIGGER locstem_trigger""")
         self.connection.commit()
@@ -90,7 +93,7 @@ class ItseeApparatusLoader(object):
                     self.add_ms_ranges(book_number)
                     MSS_added = True
                 if self.is_variant(app):
-                    MT_reading_label = self.get_MT_reading(app)
+                    MT_reading_label = self.get_MT_reading(app, byz_wits, min_byz)
                     if MT_reading_label is None:
                         raise ValueError('MT reading is not defined')
                     ref = app.get('n')
@@ -277,7 +280,8 @@ class ItseeApparatusLoader(object):
             return True
         return False
 
-    def get_MT_reading(self, app):
+    def get_MT_reading(self, app, byz_wits, min_byz):
+        max_byz = len(byz_wits)
         singular = []
         candidate = None
         all_readings = {}
@@ -288,7 +292,7 @@ class ItseeApparatusLoader(object):
             else:
                 all_readings[label].extend([x.text for x in rdg.findall('.//{http://www.tei-c.org/ns/1.0}idno')])
         for key in all_readings:
-            witness_compare = set(all_readings[key]).intersection(BYZ_WITS)
+            witness_compare = set(all_readings[key]).intersection(byz_wits)
             if len(witness_compare) >= 8:
                 # if we have at least 8 of them (of 9) then this is the MT reading
                 return key

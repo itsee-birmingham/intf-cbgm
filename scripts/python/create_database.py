@@ -6,6 +6,8 @@ from ITSEEnestle import ItseeBaseTextLoader
 from itseeimport import ItseeApparatusLoader
 
 
+# run 
+# python3 create_database.py gal_ph1 9 ../../data/gal_positive 020 049 1 35 398 424 1069 1617 2352 7
 
 def create_database(db_name):
 
@@ -79,6 +81,7 @@ def main(argv):
     parser.add_argument('book_number', type=int, help='The number of the book according to the books.sql list.')
     parser.add_argument('data_dir', help='The path to the directory containing all the data files.')
     parser.add_argument('byz_wits', nargs='*', help='The set of sigla to be treated as MT.')
+    parser.add_argument('minimum_byz_for_MT', type=int, help='The minimum number of Byz wits that must agree to be considered MT')
     args = parser.parse_args()
 
     create_database(args.db_name)
@@ -89,7 +92,7 @@ def main(argv):
     basetext_loader.load_basetext(args.db_name, args.book_number, args.data_dir)
 
     apparatus_loader = ItseeApparatusLoader()
-    apparatus_loader.load_apparatus(args.db_name, args.book_number, args.data_dir, set(args.byz_wits))
+    apparatus_loader.load_apparatus(args.db_name, args.book_number, args.data_dir, set(args.byz_wits), args.minimum_byz_for_MT)
 
     dump_database(args.db_name)
 
