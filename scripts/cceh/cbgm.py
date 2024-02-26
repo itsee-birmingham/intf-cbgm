@@ -84,17 +84,7 @@ def build_parser ():
     return parser
 
 
-if __name__ == '__main__':
-
-    build_parser ().parse_args (namespace = args)
-    config = config_from_pyfile (args.profile)
-
-    init_logging (
-        args,
-        logging.StreamHandler (), # stderr
-        logging.FileHandler ('cbgm.log')
-    )
-
+def run_cbgm (config):
     db = db_tools.PostgreSQLEngine (**config)
     parameters = dict ()
     v = CBGM_Params ()
@@ -118,3 +108,45 @@ if __name__ == '__main__':
     db.vacuum ()
 
     log (logging.INFO, "Done")
+
+
+if __name__ == '__main__':
+
+    build_parser ().parse_args (namespace = args)
+    
+    init_logging (
+        args,
+        logging.StreamHandler (), # stderr
+        logging.FileHandler ('cbgm.log')
+    )
+
+    config = config_from_pyfile ('instance/gal_ph1.conf')
+    print(config)
+    run_cbgm(config)
+    config = config_from_pyfile ('instance/eph_ph1.conf')
+    print(config)
+    run_cbgm(config)
+
+    # db = db_tools.PostgreSQLEngine (**config)
+    # parameters = dict ()
+    # v = CBGM_Params ()
+
+    # log (logging.INFO, "Rebuilding the 'A' text ...")
+    # build_A_text (db, parameters)
+
+    # log (logging.INFO, "Creating the labez matrix ...")
+    # create_labez_matrix (db, parameters, v)
+
+    # log (logging.INFO, "Calculating mss similarity pre-co ...")
+    # calculate_mss_similarity_preco (db, parameters, v)
+
+    # log (logging.INFO, "Calculating mss similarity post-co ...")
+    # calculate_mss_similarity_postco (db, parameters, v)
+
+    # log (logging.INFO, "Writing affinity table ...")
+    # write_affinity_table (db, parameters, v)
+
+    # log (logging.INFO, "Vacuum ...")
+    # db.vacuum ()
+
+    # log (logging.INFO, "Done")
